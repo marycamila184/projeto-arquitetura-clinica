@@ -72,7 +72,7 @@ public class TipoAnimalDAO extends AbstractDAO<TipoAnimal, String> {
 		return statement;
 	}
 	
-	public void RemoverComRelacionamento(String acronimoTipoAnimal) throws Exception {
+	public void removerComRelacionamento(String acronimoTipoAnimal) throws Exception {
 		Connection con = null;
 		PreparedStatement statementRelacionamentos = null;
 		PreparedStatement statement = null;
@@ -103,6 +103,9 @@ public class TipoAnimalDAO extends AbstractDAO<TipoAnimal, String> {
 			try {
 				if (statement != null)
 					statement.close();
+				
+				if (statementRelacionamentos != null)
+					statementRelacionamentos.close();
 			} catch (Exception e) {
 				ultimaExcecao = e;
 			}

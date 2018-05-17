@@ -82,7 +82,7 @@ public class EspecieDAO extends AbstractDAO<Especie, Long>{
 		return statement;
 	}
 	
-	public void RemoverComRelacionamento(Long idEspecie) throws Exception {
+	public void removerComRelacionamento(Long idEspecie) throws Exception {
 		Connection con = null;
 		PreparedStatement statementRelacionamentos = null;
 		PreparedStatement statement = null;
@@ -113,6 +113,9 @@ public class EspecieDAO extends AbstractDAO<Especie, Long>{
 			try {
 				if (statement != null)
 					statement.close();
+				
+				if (statementRelacionamentos != null)
+					statementRelacionamentos.close();
 			} catch (Exception e) {
 				ultimaExcecao = e;
 			}
