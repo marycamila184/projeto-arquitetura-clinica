@@ -29,7 +29,6 @@ public class AnimalDAO extends AbstractDAO<Animal, Long> {
 		e.setId(rs.getLong(4));
 		e.setNome(rs.getString(5));
 		e.setDescricao(rs.getString(6));
-
 		a.setEspecie(e);
 
 		return a;
@@ -41,7 +40,7 @@ public class AnimalDAO extends AbstractDAO<Animal, Long> {
 		statement.setLong(1, id);
 		return statement;
 	}
-
+	
 	@Override
 	protected PreparedStatement criarStatementAtualizar(Connection conexao, Animal objeto) throws Exception {
 		PreparedStatement statement = conexao
