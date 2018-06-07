@@ -1,4 +1,4 @@
-package com.up.clinica.model.dao;
+package com.up.clinica.model.dal;
 
 import java.util.List;
 
