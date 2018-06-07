@@ -15,10 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.up.clinica.model.Animal;
 import com.up.clinica.servico.converter.AnimalJsonConverter;
 
-@WebServlet(name = "GetAnimais", urlPatterns = { "/GetAnimais" })
-public class AnimalService extends HttpServlet {
+@WebServlet(name = "GetTipoAnimais", urlPatterns = { "/GetTipoAnimais" })
+public class TipoAnimalService extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
