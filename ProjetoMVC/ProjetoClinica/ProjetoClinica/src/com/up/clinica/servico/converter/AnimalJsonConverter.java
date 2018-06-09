@@ -5,8 +5,12 @@ import com.up.clinica.model.Animal;
 public class AnimalJsonConverter extends JsonConverter<Animal> {
 
 	@Override
-	protected String tipoClasse() {
+	protected String tipoClasseString() {
 		return "animais";
 	}
-
+	
+	@Override
+	public Animal convertToObject(String jsonString) {
+		return gson.fromJson(jsonString, Animal.class);
+	}
 }

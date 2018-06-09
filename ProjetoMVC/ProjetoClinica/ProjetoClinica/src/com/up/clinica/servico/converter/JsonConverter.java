@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 
 public abstract class JsonConverter<T> implements IJsonConverter<T> {
 
-	private Gson gson = null;
+	protected Gson gson = null;
 
 	public JsonConverter() {
 		gson = new GsonBuilder().create();
@@ -18,7 +18,7 @@ public abstract class JsonConverter<T> implements IJsonConverter<T> {
 
 	private final String convertToJson(JsonElement jsonElement) {
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.add(tipoClasse(), gson.toJsonTree(jsonElement));
+		jsonObject.add(tipoClasseString(), gson.toJsonTree(jsonElement));
 		return jsonObject.toString();
 	}
 
@@ -33,6 +33,8 @@ public abstract class JsonConverter<T> implements IJsonConverter<T> {
 		JsonObject jsonObject = new JsonObject();
 		return convertToJson(jsonObject);
 	}
+	
+	public abstract T convertToObject(String jsonString);
 
-	protected abstract String tipoClasse();
+	protected abstract String tipoClasseString();
 }

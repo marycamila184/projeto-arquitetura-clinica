@@ -7,5 +7,7 @@ public interface IJsonConverter<T> {
 	public String convertToJsonString(List<T> objetos);
 
 	public String convertToJsonString(T objeto);
+	
+	public T convertToObject(String jsonString);
 
 }
