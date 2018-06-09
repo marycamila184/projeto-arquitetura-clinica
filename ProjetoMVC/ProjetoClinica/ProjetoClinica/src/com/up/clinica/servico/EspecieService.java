@@ -38,9 +38,9 @@ public class EspecieService extends HttpServlet {
 			a2.setNome("Cachorro");
 			animais.add(a1);
 			animais.add(a2);
-			AnimalJsonConverter converter = new AnimalJsonConverter();
-			String output = converter.convertToList(animais);
-			out.print(output);
+		//	AnimalJsonConverter converter = new AnimalJsonConverter();
+		//	String output = converter.convertToList(animais);
+		//	out.print(output);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

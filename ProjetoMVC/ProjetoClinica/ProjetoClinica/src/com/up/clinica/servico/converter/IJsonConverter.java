@@ -4,8 +4,8 @@ import java.util.List;
 
 public interface IJsonConverter<T> {
 
-	public String convertToList(List<T> objetos);
-	
-	public String convertToObject(T objeto);
-	
+	public String convertToJsonString(List<T> objetos);
+
+	public String convertToJsonString(T objeto);
+
 }

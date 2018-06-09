@@ -23,13 +23,13 @@ public abstract class JsonConverter<T> implements IJsonConverter<T> {
 	}
 
 	@Override
-	public String convertToList(List<T> objetos) {
+	public String convertToJsonString(List<T> objetos) {
 		JsonArray jarray = gson.toJsonTree(objetos).getAsJsonArray();
 		return convertToJson(jarray);
 	}
 
 	@Override
-	public String convertToObject(T objeto) {
+	public String convertToJsonString(T objeto) {
 		JsonObject jsonObject = new JsonObject();
 		return convertToJson(jsonObject);
 	}

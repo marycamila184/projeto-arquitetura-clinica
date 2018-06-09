@@ -39,8 +39,8 @@ public class TipoAnimalService extends HttpServlet {
 			animais.add(a1);
 			animais.add(a2);
 			AnimalJsonConverter converter = new AnimalJsonConverter();
-			String output = converter.convertToList(animais);
-			out.print(output);
+		//	String output = converter.convertToList(animais);
+		//	out.print(output);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
