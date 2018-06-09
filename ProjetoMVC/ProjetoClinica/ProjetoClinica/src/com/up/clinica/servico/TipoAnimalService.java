@@ -23,6 +23,17 @@ public class TipoAnimalService extends HttpServlet {
 	}
 
 	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		try {
+			servico.iniciaServico(request, response);
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			e.printStackTrace();
+		}
+	}
+
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
@@ -45,6 +56,11 @@ public class TipoAnimalService extends HttpServlet {
 				return false;
 			}
 			return true;
+		}
+
+		@Override
+		public String converterId(String id) {
+			return id;
 		}
 	}
 }

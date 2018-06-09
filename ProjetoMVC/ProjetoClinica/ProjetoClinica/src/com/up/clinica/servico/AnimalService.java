@@ -34,6 +34,17 @@ public class AnimalService extends HttpServlet {
 		}
 	}
 
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		try {
+			servico.iniciaServico(request, response);
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			e.printStackTrace();
+		}
+	}
+
 	private class Services extends AbstractService<AnimalJsonConverter, AnimalDAO, Animal, Long> {
 
 		public Services(AnimalDAO dao, AnimalJsonConverter converter) {
@@ -46,6 +57,11 @@ public class AnimalService extends HttpServlet {
 				return false;
 			}
 			return true;
+		}
+
+		@Override
+		public Long converterId(String id) {
+			return Long.valueOf(id);
 		}
 	}
 }

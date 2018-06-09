@@ -22,8 +22,8 @@ public abstract class AbstractService<C extends JsonConverter<T>, D extends Abst
 
 	public final void iniciaServico(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String resultadoJson = "";
-		
-		//Pegando o serviço
+
+		// Pegando o serviço
 		String servico = request.getParameter("servico");
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -35,8 +35,7 @@ public abstract class AbstractService<C extends JsonConverter<T>, D extends Abst
 
 		} else if (servico.equals("buscar")) {
 			// Buscando um animal
-			U id = (U) request.getParameter("id");
-			resultadoJson = buscar(id);
+			resultadoJson = buscar(request.getParameter("id"));
 
 		} else if (servico.equals("cadastrar")) {
 			T object = parserStringToObject(request.getReader());
@@ -51,7 +50,7 @@ public abstract class AbstractService<C extends JsonConverter<T>, D extends Abst
 
 		} else if (servico.equals("remover")) {
 			// Removendo o animal
-			remover((U) request.getParameter("id"));
+			remover(request.getParameter("id"));
 
 		} else if (servico.equals("alterar")) {
 			T object = parserStringToObject(request.getReader());
@@ -82,8 +81,8 @@ public abstract class AbstractService<C extends JsonConverter<T>, D extends Abst
 	}
 
 	@Override
-	public String buscar(U id) throws Exception {
-		return converter.convertToJsonString(dao.buscar(id));
+	public String buscar(String id) throws Exception {
+		return converter.convertToJsonString(dao.buscar(converterId(id)));
 	}
 
 	@Override
@@ -92,11 +91,11 @@ public abstract class AbstractService<C extends JsonConverter<T>, D extends Abst
 	}
 
 	@Override
-	public void remover(U id) throws Exception {
-		dao.remover(id);
+	public void remover(String id) throws Exception {
+		dao.remover(converterId(id));
 	}
 
-	//Parser de String para Objeto T
+	// Parser de String para Objeto T
 	private T parserStringToObject(BufferedReader reader) throws IOException {
 		// Fazendo o parser do json em objeto
 		StringBuffer jb = new StringBuffer();
@@ -106,6 +105,9 @@ public abstract class AbstractService<C extends JsonConverter<T>, D extends Abst
 		return converter.convertToObject(jb.toString());
 	}
 
-	//Valida model para cadastro e alteração
+	// Valida model para cadastro e alteração
 	public abstract boolean validatorModel(T objeto);
+
+	// Converte e retorna o parametro id na forma U
+	public abstract U converterId(String id);
 }
