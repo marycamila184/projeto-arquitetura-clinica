@@ -22,9 +22,9 @@ public class AnimalService extends HttpServlet {
 		// inicio o serviço com as dependencias
 		servico = new Services(new AnimalDAO(), new AnimalJsonConverter());
 	}
-
+	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
 			servico.iniciaServico(request, response);
@@ -35,7 +35,7 @@ public class AnimalService extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
 			servico.iniciaServico(request, response);

@@ -30,7 +30,7 @@ public abstract class JsonConverter<T> implements IJsonConverter<T> {
 
 	@Override
 	public String convertToJsonString(T objeto) {
-		JsonObject jsonObject = new JsonObject();
+		JsonElement jsonObject = gson.toJsonTree(objeto);
 		return convertToJson(jsonObject);
 	}
 	

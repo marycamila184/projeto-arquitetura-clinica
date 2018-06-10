@@ -21,7 +21,7 @@ public class TipoAnimalService extends HttpServlet {
 		// inicio o serviço com as dependencias
 		servico = new Services(new TipoAnimalDAO(), new TipoAnimalConverter());
 	}
-
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

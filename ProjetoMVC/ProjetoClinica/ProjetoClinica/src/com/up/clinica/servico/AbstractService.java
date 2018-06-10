@@ -27,7 +27,6 @@ public abstract class AbstractService<C extends JsonConverter<T>, D extends Abst
 		String servico = request.getParameter("servico");
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		// ServletOutputStream out = response.getOutputStream();
 
 		if (servico.equals("listar")) {
 			// Listando os animais
@@ -35,7 +34,7 @@ public abstract class AbstractService<C extends JsonConverter<T>, D extends Abst
 
 		} else if (servico.equals("buscar")) {
 			// Buscando um animal
-			resultadoJson = buscar(request.getParameter("id"));
+			resultadoJson = buscar(request.getParameter("id"));			
 
 		} else if (servico.equals("cadastrar")) {
 			T object = parserStringToObject(request.getReader());

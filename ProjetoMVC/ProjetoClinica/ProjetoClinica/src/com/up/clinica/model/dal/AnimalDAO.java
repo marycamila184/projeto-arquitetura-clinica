@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 
 import com.up.clinica.model.Animal;
 import com.up.clinica.model.Especie;
@@ -18,27 +19,29 @@ public class AnimalDAO extends AbstractDAO<Animal, Long> {
 
 	@Override
 	protected Animal parseObjeto(ResultSet rs) throws Exception {
+		SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");
+
 		Animal a = new Animal();
 		a.setId(rs.getLong(1));
 		a.setNome(rs.getString(2));
-		a.setNascimento(rs.getDate(3));
+		String data = formatoData.format(rs.getDate(3));
+		a.setNascimento(formatoData.parse(data));
 
 		Especie e = new Especie();
 		e.setId(rs.getLong(4));
 		e.setNome(rs.getString(5));
 		e.setDescricao(rs.getString(6));
 		a.setEspecie(e);
-
 		return a;
 	}
-	
+
 	@Override
 	protected PreparedStatement criarStatementRemover(Connection conexao, Long id) throws Exception {
-		PreparedStatement statement= conexao.prepareStatement("DELETE FROM ANIMAL WHERE id=?");
+		PreparedStatement statement = conexao.prepareStatement("DELETE FROM ANIMAL WHERE id=?");
 		statement.setLong(1, id);
 		return statement;
 	}
-	
+
 	@Override
 	protected PreparedStatement criarStatementAtualizar(Connection conexao, Animal objeto) throws Exception {
 		PreparedStatement statement = conexao

@@ -22,9 +22,9 @@ public class EspecieService extends HttpServlet {
 		// inicio o serviço com as dependencias
 		servico = new Services(new EspecieDAO(), new EspecieJsonConverter());
 	}
-	
+
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
 			servico.iniciaServico(request, response);
@@ -33,9 +33,9 @@ public class EspecieService extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
 			servico.iniciaServico(request, response);
