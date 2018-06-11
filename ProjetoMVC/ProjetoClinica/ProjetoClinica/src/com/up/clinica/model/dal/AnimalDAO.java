@@ -19,14 +19,11 @@ public class AnimalDAO extends AbstractDAO<Animal, Long> {
 
 	@Override
 	protected Animal parseObjeto(ResultSet rs) throws Exception {
-		SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");
-
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Animal a = new Animal();
 		a.setId(rs.getLong(1));
 		a.setNome(rs.getString(2));
-		String data = formatoData.format(rs.getDate(3));
-		a.setNascimento(formatoData.parse(data));
-
+		a.setNascimento(df.parse(rs.getString(3)));
 		Especie e = new Especie();
 		e.setId(rs.getLong(4));
 		e.setNome(rs.getString(5));

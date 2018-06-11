@@ -13,7 +13,11 @@ $(document).ready(function() {
 			$.ajax({
 				url : "/ProjetoClinica/Animais?servico=remover&id=" + id,
 				type : "GET",
-				success : function(data, textStatus, xhr) {					
+				contentType : "application/json",
+				dataType: 'json',
+				success : function(data, textStatus, xhr) {				
+					console.log(xhr.status + " - " + textStatus);
+					console.log("aqui");
 					setTable();
 					$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi deletado com sucesso.</div>');
 				},
@@ -28,10 +32,17 @@ $(document).ready(function() {
 	$("#btn-modal-cadastrar").click(function(event) {
 		//Altero o titulo da modal
 		$('#modal-title').text('Infomações do animal');
+		
+		//Limpo os campos
+		$('#id').val('0');
 		$('#nome').val('');
 		$('#nascimento').val('');
 		$('#especies').val("-1");	
 		$('#nascimento').mask("00/00/0000", {placeholder: "__/__/____"});
+		
+		//Mostro o botão cadastrar e escondo o botão alterar
+		$('#btn-alterar').hide();
+		$('#btn-cadastrar').show();
 	});
 	
 	$("#btn-modal-alterar").click(function(event) {
@@ -42,6 +53,10 @@ $(document).ready(function() {
 		
 		$('#nascimento').mask("00/00/0000", {placeholder: "__/__/____"});
 		
+		//Mostro o botão alterar e escondo o botão cadastrar
+		$('#btn-alterar').show();
+		$('#btn-cadastrar').hide();
+		
 		//Preencho os campos da modal
 		$.ajax({
 			url : "/ProjetoClinica/Animais?servico=buscar&id=" + id,
@@ -49,7 +64,8 @@ $(document).ready(function() {
 			success : function(data, textStatus, xhr) {	
 				$('#id').val(data.animais.id);
 				$('#nome').val(data.animais.nome);
-				$('#nascimento').val(data.animais.nascimento);
+				var dateFormat = moment(data.animais.nascimento).format('DD/MM/YYYY');
+				$('#nascimento').val(dateFormat);
 				$('#especies').val(data.animais.especie.id);
 				$('#myModal').modal('show');				
 			},
@@ -62,11 +78,15 @@ $(document).ready(function() {
 	});
 
 	$("#btn-cadastrar").click(function(event) {
+		var momentObj = moment($('#nascimento').val(), 'DD/MM/YYYY');
+		
 		var objeto = {
 			id : $('#id').val(),
 			nome : $('#nome').val(),
-			nascimento : $('#nascimento').val(),
-			idespecie : $('#especies').val()
+			nascimento :  momentObj.format('YYYY-MM-DD'),
+			especie:{
+				id : $('#especies').val()
+			}
 		}
 
 		$.ajax({
@@ -76,8 +96,8 @@ $(document).ready(function() {
 			contentType : "application/json; charset=utf-8",
 			success : function(data, textStatus, xhr) {
 				$('#myModal').modal('hide');
-				setTable();
 				$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi cadastrado com sucesso.</div>');
+				setTable();				
 			},
 			error : function(xhr, textStatus) {
 				console.log(xhr.status + " - " + textStatus);
@@ -91,11 +111,15 @@ $(document).ready(function() {
 	});
 
 	$("#btn-alterar").click(function(event) {
+		var momentObj = moment($('#nascimento').val(), 'DD/MM/YYYY');
+		
 		var objeto = {
 			id : $('#id').val(),
 			nome : $('#nome').val(),
-			nascimento : $('#nascimento').val(),
-			idespecie : $('#especies').val()
+			nascimento :  momentObj.format('YYYY-MM-DD'),
+			especie:{
+				id : $('#especies').val()
+			}
 		}
 
 		$.ajax({
@@ -105,8 +129,8 @@ $(document).ready(function() {
 			contentType : "application/json; charset=utf-8",
 			success : function(data, textStatus, xhr) {
 				$('#myModal').modal('hide');
-				setTable();
-				$('#mensagem-modal').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi alterado com sucesso.</div>');
+				$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi alterado com sucesso.</div>');
+				setTable();				
 			},
 			error : function(xhr, textStatus) {
 				console.log(xhr.status + " - " + textStatus);
@@ -133,11 +157,12 @@ $("#especies").ready(function(event) {
 function setTable() {
 	$.get("/ProjetoClinica/Animais?servico=listar", function(data) {
 		$("#table tbody tr").remove();
-		$.each(data.animais, function(key, value) {			
+		$.each(data.animais, function(key, value) {		
+			var dateFormat = moment(value.nascimento).format('DD/MM/YYYY');
 			$('#table tbody').append(
 					'<tr id="' + value.id + '" data-row-name="' + value.nome
 							+ '"><td>' + value.id + '</td><td>' + value.nome
-							+ '</td><td>' + value.nascimento + '</td><td>'
+							+ '</td><td>' + dateFormat + '</td><td>'
 							+ value.especie.nome + '</td></tr>');
 		});
 		
