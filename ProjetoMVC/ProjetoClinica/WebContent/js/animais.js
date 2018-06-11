@@ -13,10 +13,8 @@ $(document).ready(function() {
 			$.ajax({
 				url : "/ProjetoClinica/Animais?servico=remover&id=" + id,
 				type : "GET",
-				contentType : "application/json",
-				dataType: 'json',
-				success : function(data, textStatus, xhr) {				
-					console.log(xhr.status + " - " + textStatus);
+				dataType: 'text',               
+				success : function() {				
 					console.log("aqui");
 					setTable();
 					$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi deletado com sucesso.</div>');
