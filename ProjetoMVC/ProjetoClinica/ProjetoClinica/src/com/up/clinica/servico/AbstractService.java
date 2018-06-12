@@ -101,7 +101,6 @@ public abstract class AbstractService<C extends JsonConverter<T>, D extends Abst
 		String line = null;
 		while ((line = reader.readLine()) != null)
 			jb.append(line);
-		System.out.println(jb.toString());
 		return converter.convertToObject(jb.toString());
 	}
 

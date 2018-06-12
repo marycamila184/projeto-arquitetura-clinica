@@ -14,13 +14,11 @@ $(document).ready(function() {
 				url : "/ProjetoClinica/Animais?servico=remover&id=" + id,
 				type : "GET",
 				dataType: 'text',               
-				success : function() {				
-					console.log("aqui");
+				success : function() {	
 					setTable();
 					$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi deletado com sucesso.</div>');
 				},
 				error : function(xhr, textStatus) {
-					console.log(xhr.status + " - " + textStatus);
 					$('#mensagem').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Ocorreu um erro, tente novamente mais tarde.</div>');
 				}
 			});
@@ -41,6 +39,7 @@ $(document).ready(function() {
 		//Mostro o botão cadastrar e escondo o botão alterar
 		$('#btn-alterar').hide();
 		$('#btn-cadastrar').show();
+		$('#mensagem-modal div').remove();
 	});
 	
 	$("#btn-modal-alterar").click(function(event) {
@@ -55,6 +54,8 @@ $(document).ready(function() {
 		$('#btn-alterar').show();
 		$('#btn-cadastrar').hide();
 		
+		$('#mensagem-modal div').remove();
+		
 		//Preencho os campos da modal
 		$.ajax({
 			url : "/ProjetoClinica/Animais?servico=buscar&id=" + id,
@@ -68,7 +69,6 @@ $(document).ready(function() {
 				$('#myModal').modal('show');				
 			},
 			error : function(xhr, textStatus) {
-				console.log(xhr.status + " - " + textStatus);
 				$('#myModal').modal('hide');
 				$('#mensagem').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Ocorreu um erro, tente novamente mais tarde.</div>');
 			}
@@ -76,6 +76,9 @@ $(document).ready(function() {
 	});
 
 	$("#btn-cadastrar").click(function(event) {
+		var processado = false;
+		var statusCode;
+		
 		var momentObj = moment($('#nascimento').val(), 'DD/MM/YYYY');
 		
 		var objeto = {
@@ -92,20 +95,29 @@ $(document).ready(function() {
 			url : "/ProjetoClinica/Animais?servico=cadastrar",
 			data : JSON.stringify(objeto),
 			contentType : "application/json; charset=utf-8",
-			success : function(data, textStatus, xhr) {
-				$('#myModal').modal('hide');
-				$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi cadastrado com sucesso.</div>');
-				setTable();				
+			dataType: 'text',      
+			success : function(data) {	
+				processado = true;							
 			},
 			error : function(xhr, textStatus) {
-				console.log(xhr.status + " - " + textStatus);
-				if(xhr.status == 400){
-					$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Preencha todos os campos corretamente.</div>');
-				}else{
-					$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Ocorreu um erro, tente novamente mais tarde.</div>');
-				}				
+				processado = false;
+				statusCode = xhr.status;				
 			}
 		});
+		
+		if(processado){
+			$('#myModal').modal('hide');
+			$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi cadastrado com sucesso.</div>');	
+			setTable();		
+			$('#btn-modal-alterar').attr("disabled", true);
+			$('#btn-excluir').attr("disabled", true);
+		}else{
+			if(statusCode == 400){
+				$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Preencha todos os campos corretamente.</div>');
+			}else{
+				$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Ocorreu um erro, tente novamente mais tarde.</div>');
+			}	
+		}
 	});
 
 	$("#btn-alterar").click(function(event) {
@@ -124,27 +136,26 @@ $(document).ready(function() {
 			type : "POST",
 			url : "/ProjetoClinica/Animais?servico=alterar",
 			data : JSON.stringify(objeto),
+			dataType: 'text',      
 			contentType : "application/json; charset=utf-8",
-			success : function(data, textStatus, xhr) {
-				$('#myModal').modal('hide');
-				$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi alterado com sucesso.</div>');
-				setTable();				
-			},
-			error : function(xhr, textStatus) {
-				console.log(xhr.status + " - " + textStatus);
-				if(xhr.status == 400){
-					$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Preencha todos os campos corretamente.</div>');
-				}else{
-					$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Ocorreu um erro, tente novamente mais tarde.</div>');
-				}		
-			}
-		});
+		}).done(function(data, textStatus, jqXHR) {
+			$('#myModal').modal('hide');
+			$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi alterado com sucesso.</div>');
+			setTable();		
+			$('#btn-modal-alterar').attr("disabled", true);
+			$('#btn-excluir').attr("disabled", true);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+        	if(jqXHR.status == 400){
+        		$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Preencha todos os campos corretamente.</div>');
+        	}else{
+        		$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Ocorreu um erro, tente novamente mais tarde.</div>');
+        	}
+        });
 	});
 });
 
 $("#especies").ready(function(event) {
 	$.get("/ProjetoClinica/Especies?servico=listar", function(data) {
-		console.log(data.especies);
 		$.each(data.especies, function(key, value) {
 			$("#especies").append('<option value="-1" disabled selected>Escolha a espécie</option>');
 			$("#especies").append("<option value='"+ value.id+"'>"+ value.nome+"</option>");
