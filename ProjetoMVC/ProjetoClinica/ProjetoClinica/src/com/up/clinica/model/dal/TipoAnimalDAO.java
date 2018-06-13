@@ -14,14 +14,14 @@ public class TipoAnimalDAO extends AbstractDAO<TipoAnimal, String> {
 	@Override
 	protected PreparedStatement criarStatementBuscar(Connection conexao, String id) throws Exception {
 		PreparedStatement statement = conexao
-				.prepareStatement("SELECT ACRONIMO, NOME, DESCRICAO FROM TIPO_ANIMAL WHERE e.id = ?");
+				.prepareStatement("SELECT ACRONIMO, NOME, DESCRICAO FROM TIPO_ANIMAL WHERE ACRONIMO = ?");
 		statement.setString(1, id);
 		return statement;
 	}
 
 	@Override
 	protected PreparedStatement criarStatementRemover(Connection conexao, String id) throws Exception {
-		PreparedStatement statement= conexao.prepareStatement("DELETE FROM TIPO_ANIMAL WHERE id=?");
+		PreparedStatement statement= conexao.prepareStatement("DELETE FROM TIPO_ANIMAL WHERE ACRONIMO=?");
 		statement.setString(1, id);
 		return statement;
 	}
@@ -44,7 +44,7 @@ public class TipoAnimalDAO extends AbstractDAO<TipoAnimal, String> {
 	@Override
 	protected PreparedStatement criarStatementAtualizar(Connection conexao, TipoAnimal objeto) throws Exception {
 		PreparedStatement statement = conexao
-				.prepareStatement("UPDATE TIPO_ANIMAL SET NOME=?, DESCRICAO=? WHERE id=?");
+				.prepareStatement("UPDATE TIPO_ANIMAL SET NOME=?, DESCRICAO=? WHERE ACRONIMO=?");
 		statement.setString(1, objeto.getNome());
 		statement.setString(2, objeto.getDescricao());
 

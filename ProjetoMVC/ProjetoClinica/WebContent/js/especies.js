@@ -39,6 +39,7 @@ $(document).ready(function() {
 		$('#btn-alterar').hide();
 		$('#btn-cadastrar').show();
 		$('#mensagem-modal div').remove();
+		$('#mensagem div').remove();
 	});
 	
 	$("#btn-modal-alterar").click(function(event) {
@@ -52,6 +53,7 @@ $(document).ready(function() {
 		$('#btn-cadastrar').hide();
 		
 		$('#mensagem-modal div').remove();
+		$('#mensagem div').remove();
 		
 		//Preencho os campos da modal
 		$.ajax({
@@ -61,7 +63,7 @@ $(document).ready(function() {
 				$('#id').val(data.especies.id);
 				$('#nome').val(data.especies.nome);
 				$('#descricao').val(data.especies.descricao);
-				$('#tipoanimais').val(data.especies.tipoanimal.acronimo);
+				$('#tipoanimais').val(data.especies.tipoAnimal.acronimo);
 				$('#myModal').modal('show');				
 			},
 			error : function(xhr, textStatus) {
@@ -72,14 +74,11 @@ $(document).ready(function() {
 	});
 
 	$("#btn-cadastrar").click(function(event) {
-		var processado = false;
-		var statusCode;
-	
 		var objeto = {
 			id : $('#id').val(),
 			nome : $('#nome').val(),
 			descricao : $('#descricao').val(),
-			tipoanimal:{
+			tipoAnimal:{
 				acronimo : $('#tipoanimais').val()
 			}
 		}
@@ -111,10 +110,12 @@ $(document).ready(function() {
 			id : $('#id').val(),
 			nome : $('#nome').val(),
 			descricao : $('#descricao').val(),
-			tipoanimal:{
+			tipoAnimal:{
 				acronimo : $('#tipoanimais').val()
 			}
 		}
+		
+		console.log(JSON.stringify(objeto));
 
 		$.ajax({
 			type : "POST",
@@ -140,8 +141,8 @@ $(document).ready(function() {
 
 $("#tipoanimais").ready(function(event) {
 	$.get("/ProjetoClinica/TipoAnimais?servico=listar", function(data) {
-		$.each(data.especies, function(key, value) {
-			$("#tipoanimais").append('<option value="-1" disabled selected>Escolha o tipo do animal</option>');
+		$("#tipoanimais").append('<option value="-1" disabled selected>Escolha o tipo do animal</option>');
+		$.each(data.tipoanimais, function(key, value) {			
 			$("#tipoanimais").append("<option value='"+ value.acronimo+"'>"+ value.nome+"</option>");
 		});
 	});
@@ -150,12 +151,12 @@ $("#tipoanimais").ready(function(event) {
 function setTable() {
 	$.get("/ProjetoClinica/Especies?servico=listar", function(data) {
 		$("#table tbody tr").remove();
-		$.each(data.animais, function(key, value) {		
+		$.each(data.especies, function(key, value) {		
 			$('#table tbody').append(
-					'<tr id="' + value.acronimo + '" data-row-name="' + value.nome
-							+ '"><td>' + value.acronimo + '</td><td>' + value.nome
+					'<tr id="' + value.id + '" data-row-name="' + value.nome
+							+ '"><td>' + value.id + '</td><td>' + value.nome
 							+ '</td><td>' + value.descricao + '</td><td>'
-							+ value.acronimo.nome + '</td></tr>');
+							+ value.tipoAnimal.nome + '</td></tr>');
 		});
 		
 		$('#table tr').click(function(event) {

@@ -53,7 +53,7 @@ public class EspecieService extends HttpServlet {
 
 		@Override
 		public boolean validatorModel(Especie objeto) {
-			if (objeto.getNome().equals("") || objeto.getDescricao() == null
+			if (objeto.getNome().equals("") || objeto.getDescricao().equals("") 
 					|| objeto.getTipoAnimal().getAcronimo().equals("")) {
 				return false;
 			}

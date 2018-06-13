@@ -40,6 +40,7 @@ $(document).ready(function() {
 		$('#btn-alterar').hide();
 		$('#btn-cadastrar').show();
 		$('#mensagem-modal div').remove();
+		$('#mensagem div').remove();
 	});
 	
 	$("#btn-modal-alterar").click(function(event) {
@@ -55,6 +56,7 @@ $(document).ready(function() {
 		$('#btn-cadastrar').hide();
 		
 		$('#mensagem-modal div').remove();
+		$('#mensagem div').remove();
 		
 		//Preencho os campos da modal
 		$.ajax({
@@ -156,8 +158,8 @@ $(document).ready(function() {
 
 $("#especies").ready(function(event) {
 	$.get("/ProjetoClinica/Especies?servico=listar", function(data) {
-		$.each(data.especies, function(key, value) {
-			$("#especies").append('<option value="-1" disabled selected>Escolha a espécie</option>');
+		$("#especies").append('<option value="-1" disabled selected>Escolha a espécie</option>');
+		$.each(data.especies, function(key, value) {			
 			$("#especies").append("<option value='"+ value.id+"'>"+ value.nome+"</option>");
 		});
 	});
