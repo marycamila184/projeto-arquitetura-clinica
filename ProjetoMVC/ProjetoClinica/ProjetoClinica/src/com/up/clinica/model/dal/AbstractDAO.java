@@ -72,10 +72,10 @@ public abstract class AbstractDAO<T, U> implements IGenericDAO<T, U> {
 			statement.executeUpdate();
 
 			generatedKeys = statement.getGeneratedKeys();
-			generatedKeys.next();
+			if (generatedKeys.next()) {
+				this.carregarChavesGeradasNoObjeto(generatedKeys, objeto);
+			}
 
-			this.carregarChavesGeradasNoObjeto(generatedKeys, objeto);
-			
 			con.commit();
 			return;
 		} catch (Exception e) {
@@ -192,6 +192,7 @@ public abstract class AbstractDAO<T, U> implements IGenericDAO<T, U> {
 	@Override
 	public void remover(U id) throws Exception {
 		Connection con = null;
+		PreparedStatement statementRelacionamentos = null;
 		PreparedStatement statement = null;
 		ResultSet generatedKeys = null;
 		Exception ultimaExcecao = null;
@@ -199,6 +200,12 @@ public abstract class AbstractDAO<T, U> implements IGenericDAO<T, U> {
 		try {
 			con = ConnectionFactory.getConnection();
 			con.setAutoCommit(false);
+			
+			if(this.criarStatementRemoveComRelacionamentos(con, id) != null){
+				statementRelacionamentos = this.criarStatementRemoveComRelacionamentos(con, id);
+				statementRelacionamentos.executeUpdate();
+			}		
+			
 			statement = this.criarStatementRemover(con, id);
 			statement.executeUpdate();
 			con.commit();
@@ -216,6 +223,9 @@ public abstract class AbstractDAO<T, U> implements IGenericDAO<T, U> {
 			try {
 				if (statement != null)
 					statement.close();
+				
+				if (statementRelacionamentos != null)
+					statementRelacionamentos.close();
 			} catch (Exception e) {
 				ultimaExcecao = e;
 			}
@@ -228,10 +238,12 @@ public abstract class AbstractDAO<T, U> implements IGenericDAO<T, U> {
 		}
 		throw ultimaExcecao;
 	}
-
+	
 	protected abstract PreparedStatement criarStatementBuscar(Connection conexao, U id) throws Exception;
 
 	protected abstract PreparedStatement criarStatementRemover(Connection conexao, U id) throws Exception;
+	
+	protected abstract PreparedStatement criarStatementRemoveComRelacionamentos(Connection conexao, U id) throws Exception;
 
 	protected abstract void carregarChavesGeradasNoObjeto(ResultSet generatedKeys, T objeto) throws Exception;
 

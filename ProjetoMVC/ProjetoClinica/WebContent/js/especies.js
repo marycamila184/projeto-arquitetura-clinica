@@ -55,6 +55,11 @@ $(document).ready(function() {
 		$('#mensagem-modal div').remove();
 		$('#mensagem div').remove();
 		
+		$('#id').val('0');
+		$('#nome').val('');
+		$('#descricao').val('');
+		$('#tipoanimais').val("-1");	
+		
 		//Preencho os campos da modal
 		$.ajax({
 			url : "/ProjetoClinica/Especies?servico=buscar&id=" + id,

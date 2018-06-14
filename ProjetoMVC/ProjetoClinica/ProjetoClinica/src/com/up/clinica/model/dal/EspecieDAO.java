@@ -78,6 +78,7 @@ public class EspecieDAO extends AbstractDAO<Especie, Long> {
 		return statement;
 	}
 
+	@Override
 	protected PreparedStatement criarStatementRemoveComRelacionamentos(Connection conexao, Long id) throws Exception {
 		PreparedStatement statement = conexao.prepareStatement("DELETE FROM ANIMAL WHERE ESPECIE_ID=?");
 		statement.setLong(1, id);
@@ -85,49 +86,6 @@ public class EspecieDAO extends AbstractDAO<Especie, Long> {
 	}
 
 	public void removerComRelacionamento(Long idEspecie) throws Exception {
-		Connection con = null;
-		PreparedStatement statementRelacionamentos = null;
-		PreparedStatement statement = null;
-		ResultSet generatedKeys = null;
-		Exception ultimaExcecao = null;
-
-		try {
-			con = ConnectionFactory.getConnection();
-			con.setAutoCommit(false);
-
-			statementRelacionamentos = this.criarStatementRemoveComRelacionamentos(con, idEspecie);
-			statementRelacionamentos.executeUpdate();
-
-			statement = this.criarStatementRemover(con, idEspecie);
-			statement.executeUpdate();
-			con.commit();
-			return;
-		} catch (Exception e) {
-			ultimaExcecao = e;
-			con.rollback();
-		} finally {
-			try {
-				if (generatedKeys != null)
-					generatedKeys.close();
-			} catch (SQLException e) {
-				ultimaExcecao = e;
-			}
-			try {
-				if (statement != null)
-					statement.close();
-
-				if (statementRelacionamentos != null)
-					statementRelacionamentos.close();
-			} catch (Exception e) {
-				ultimaExcecao = e;
-			}
-			try {
-				if (con != null)
-					con.close();
-			} catch (Exception e) {
-				ultimaExcecao = e;
-			}
-		}
-		throw ultimaExcecao;
+		
 	}
 }

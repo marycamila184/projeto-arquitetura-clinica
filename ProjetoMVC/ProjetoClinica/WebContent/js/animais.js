@@ -49,6 +49,10 @@ $(document).ready(function() {
 		var id = $('tr.selected').attr('id');
 		$('#modal-title').text('Informações do animal #'+id);
 		
+		$('#id').val('0');
+		$('#nome').val('');
+		$('#nascimento').val('');
+		$('#especies').val("-1");	
 		$('#nascimento').mask("00/00/0000", {placeholder: "__/__/____"});
 		
 		//Mostro o botão alterar e escondo o botão cadastrar
@@ -78,81 +82,81 @@ $(document).ready(function() {
 	});
 
 	$("#btn-cadastrar").click(function(event) {
-		var processado = false;
-		var statusCode;
-		
 		var momentObj = moment($('#nascimento').val(), 'DD/MM/YYYY');
 		
-		var objeto = {
-			id : $('#id').val(),
-			nome : $('#nome').val(),
-			nascimento :  momentObj.format('YYYY-MM-DD'),
-			especie:{
-				id : $('#especies').val()
-			}
-		}
-
-		$.ajax({
-			type : "POST",
-			url : "/ProjetoClinica/Animais?servico=cadastrar",
-			data : JSON.stringify(objeto),
-			contentType : "application/json; charset=utf-8",
-			dataType: 'text',      
-			success : function(data) {	
-				processado = true;							
-			},
-			error : function(xhr, textStatus) {
-				processado = false;
-				statusCode = xhr.status;				
-			}
-		});
-		
-		if(processado){
-			$('#myModal').modal('hide');
-			$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi cadastrado com sucesso.</div>');	
-			setTable();		
-			$('#btn-modal-alterar').attr("disabled", true);
-			$('#btn-excluir').attr("disabled", true);
+		if(momentObj.isAfter(new Date())){
+			$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> A data de nascimento não pode ser maior que a atual.</div>');
+			$('#nascimento').mask("00/00/0000", {placeholder: "__/__/____"});
 		}else{
-			if(statusCode == 400){
-				$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Preencha todos os campos corretamente.</div>');
-			}else{
-				$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Ocorreu um erro, tente novamente mais tarde.</div>');
-			}	
+	
+			var objeto = {
+				id : $('#id').val(),
+				nome : $('#nome').val(),
+				nascimento :  momentObj.format('YYYY-MM-DD'),
+				especie:{
+					id : $('#especies').val()
+				}
+			}
+	
+			$.ajax({
+				type : "POST",
+				url : "/ProjetoClinica/Animais?servico=cadastrar",
+				data : JSON.stringify(objeto),
+				contentType : "application/json; charset=utf-8",
+				dataType: 'text'
+			}).done(function(data, textStatus, jqXHR) {
+				$('#myModal').modal('hide');
+				$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi cadastrado com sucesso.</div>');	
+				setTable();		
+				$('#btn-modal-alterar').attr("disabled", true);
+				$('#btn-excluir').attr("disabled", true);
+	        }).fail(function(jqXHR, textStatus, errorThrown) {
+	        	if(jqXHR.status == 400){
+	        		$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Preencha todos os campos corretamente.</div>');
+	        	}else{
+	        		$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Ocorreu um erro, tente novamente mais tarde.</div>');
+	        	}
+	        });
 		}
 	});
 
 	$("#btn-alterar").click(function(event) {
 		var momentObj = moment($('#nascimento').val(), 'DD/MM/YYYY');
 		
-		var objeto = {
-			id : $('#id').val(),
-			nome : $('#nome').val(),
-			nascimento :  momentObj.format('YYYY-MM-DD'),
-			especie:{
-				id : $('#especies').val()
+		if(momentObj.isAfter(new Date())){
+			$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> A data de nascimento não pode ser maior que a atual.</div>');
+			$('#nascimento').mask("00/00/0000", {placeholder: "__/__/____"});
+		}else{
+		
+			var objeto = {
+				id : $('#id').val(),
+				nome : $('#nome').val(),
+				nascimento :  momentObj.format('YYYY-MM-DD'),
+				especie:{
+					id : $('#especies').val()
+				}
 			}
+	
+			$.ajax({
+				type : "POST",
+				url : "/ProjetoClinica/Animais?servico=alterar",
+				data : JSON.stringify(objeto),
+				dataType: 'text',      
+				contentType : "application/json; charset=utf-8",
+			}).done(function(data, textStatus, jqXHR) {
+				$('#myModal').modal('hide');
+				$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi alterado com sucesso.</div>');
+				setTable();		
+				$('#btn-modal-alterar').attr("disabled", true);
+				$('#btn-excluir').attr("disabled", true);
+	        }).fail(function(jqXHR, textStatus, errorThrown) {
+	        	if(jqXHR.status == 400){
+	        		$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Preencha todos os campos corretamente.</div>');
+	        	}else{
+	        		$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Ocorreu um erro, tente novamente mais tarde.</div>');
+	        	}
+	        });
 		}
-
-		$.ajax({
-			type : "POST",
-			url : "/ProjetoClinica/Animais?servico=alterar",
-			data : JSON.stringify(objeto),
-			dataType: 'text',      
-			contentType : "application/json; charset=utf-8",
-		}).done(function(data, textStatus, jqXHR) {
-			$('#myModal').modal('hide');
-			$('#mensagem').html('<div class="alert alert-success" role="alert"><strong>Concluído!</strong> O animal foi alterado com sucesso.</div>');
-			setTable();		
-			$('#btn-modal-alterar').attr("disabled", true);
-			$('#btn-excluir').attr("disabled", true);
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-        	if(jqXHR.status == 400){
-        		$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Preencha todos os campos corretamente.</div>');
-        	}else{
-        		$('#mensagem-modal').html('<div class="alert alert-danger" role="alert"><strong>Ops!</strong> Ocorreu um erro, tente novamente mais tarde.</div>');
-        	}
-        });
 	});
 });
 

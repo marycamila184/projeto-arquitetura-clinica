@@ -80,4 +80,10 @@ public class AnimalDAO extends AbstractDAO<Animal, Long> {
 		statement.setLong(1, id);
 		return statement;
 	}
+
+	@Override
+	protected PreparedStatement criarStatementRemoveComRelacionamentos(Connection conexao, Long id) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

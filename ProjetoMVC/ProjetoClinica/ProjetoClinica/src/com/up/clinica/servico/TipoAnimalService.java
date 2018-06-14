@@ -52,7 +52,7 @@ public class TipoAnimalService extends HttpServlet {
 
 		@Override
 		public boolean validatorModel(TipoAnimal objeto) {
-			if (objeto.getNome().equals("") || objeto.getDescricao().equals("")) {
+			if (objeto.getAcronimo().equals("") ||objeto.getNome().equals("")) {
 				return false;
 			}
 			return true;
