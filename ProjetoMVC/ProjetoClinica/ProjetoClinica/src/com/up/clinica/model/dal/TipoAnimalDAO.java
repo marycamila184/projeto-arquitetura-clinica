@@ -65,10 +65,61 @@ public class TipoAnimalDAO extends AbstractDAO<TipoAnimal, String> {
 		return t;
 	}
 	
+	
 	@Override
-	protected PreparedStatement criarStatementRemoveComRelacionamentos(Connection conexao, String id) throws Exception {
-		PreparedStatement statement= conexao.prepareStatement("DELETE FROM ESPECIE WHERE TIPO_ANIMAL_ACRONIMO=?");
-		statement.setString(1, id);
-		return statement;
+	public void remover(String id) throws Exception {
+		Connection con = null;
+		PreparedStatement statementRelacionamentoEspecie = null;
+		PreparedStatement statementRelacionamentoAnimal = null;
+		PreparedStatement statement = null;
+		ResultSet generatedKeys = null;
+		Exception ultimaExcecao = null;
+
+		try {
+			con = ConnectionFactory.getConnection();
+			con.setAutoCommit(false);
+			
+			statementRelacionamentoAnimal = con.prepareStatement("DELETE FROM ANIMAL WHERE ESPECIE_ID = (SELECT ID FROM ESPECIE WHERE TIPO_ANIMAL_ACRONIMO = ?)");
+			statementRelacionamentoAnimal.setString(1, id);
+			statementRelacionamentoAnimal.executeUpdate();
+
+			statementRelacionamentoEspecie = con.prepareStatement("DELETE FROM ESPECIE WHERE TIPO_ANIMAL_ACRONIMO=?");
+			statementRelacionamentoEspecie.setString(1, id);
+			statementRelacionamentoEspecie.executeUpdate();
+
+			statement = this.criarStatementRemover(con, id);
+			statement.executeUpdate();
+			con.commit();
+			return;
+		} catch (Exception e) {
+			ultimaExcecao = e;
+			con.rollback();
+		} finally {
+			try {
+				if (generatedKeys != null)
+					generatedKeys.close();
+			} catch (SQLException e) {
+				ultimaExcecao = e;
+			}
+			try {
+				if (statement != null)
+					statement.close();
+
+				if (statementRelacionamentoAnimal != null)
+					statementRelacionamentoAnimal.close();
+				
+				if (statementRelacionamentoEspecie != null)
+					statementRelacionamentoEspecie.close();
+			} catch (Exception e) {
+				ultimaExcecao = e;
+			}
+			try {
+				if (con != null)
+					con.close();
+			} catch (Exception e) {
+				ultimaExcecao = e;
+			}
+		}
+		throw ultimaExcecao;
 	}
 }

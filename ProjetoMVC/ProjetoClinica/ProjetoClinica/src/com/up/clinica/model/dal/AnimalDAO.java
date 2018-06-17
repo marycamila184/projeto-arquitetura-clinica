@@ -3,10 +3,12 @@ package com.up.clinica.model.dal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 
 import com.up.clinica.model.Animal;
+import com.up.clinica.model.ConnectionFactory;
 import com.up.clinica.model.Especie;
 
 public class AnimalDAO extends AbstractDAO<Animal, Long> {
@@ -81,9 +83,49 @@ public class AnimalDAO extends AbstractDAO<Animal, Long> {
 		return statement;
 	}
 
+
 	@Override
-	protected PreparedStatement criarStatementRemoveComRelacionamentos(Connection conexao, Long id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public void remover(Long id) throws Exception {
+		Connection con = null;
+		PreparedStatement statementRelacionamentos = null;
+		PreparedStatement statement = null;
+		ResultSet generatedKeys = null;
+		Exception ultimaExcecao = null;
+
+		try {
+			con = ConnectionFactory.getConnection();
+			con.setAutoCommit(false);
+			
+			statement = this.criarStatementRemover(con, id);
+			statement.executeUpdate();
+			con.commit();
+			return;
+		} catch (Exception e) {
+			ultimaExcecao = e;
+			con.rollback();
+		} finally {
+			try {
+				if (generatedKeys != null)
+					generatedKeys.close();
+			} catch (SQLException e) {
+				ultimaExcecao = e;
+			}
+			try {
+				if (statement != null)
+					statement.close();
+				
+				if (statementRelacionamentos != null)
+					statementRelacionamentos.close();
+			} catch (Exception e) {
+				ultimaExcecao = e;
+			}
+			try {
+				if (con != null)
+					con.close();
+			} catch (Exception e) {
+				ultimaExcecao = e;
+			}
+		}
+		throw ultimaExcecao;
 	}
 }
